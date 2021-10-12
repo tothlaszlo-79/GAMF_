@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="EnrollmentDate" class="control-label"></label>
-                <input asp-for="EnrollmentDate" class="form-control" />
+                <input asp-for="EnrollmentDate" class="form-control" type="text" id="txtEnrollmentDate" />
                 <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,4 +40,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#txtEnrollmentDate").datepicker({
+                dateFormat: "yy-mm-dd",
+                firstDay: 1
+            });
+        });
+    </script>
 }
