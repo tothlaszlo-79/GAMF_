@@ -1,0 +1,46 @@
+﻿@model IEnumerable<GAMF_.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                <a asp-controller="Enrollments"
+                   asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.CourseSortParam">Tantárgy</a>
+            </th>
+            <th>
+                <a asp-controller="Enrollments"
+                   asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.NameSortParam">Tanuló neve</a>
+            </th>
+            <th>
+                Jegy
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           <td>
+               @item.Course.Title
+           </td>
+            <td>
+                @item.Student.LastName
+            </td>
+            <td>
+                @item.Grade
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
