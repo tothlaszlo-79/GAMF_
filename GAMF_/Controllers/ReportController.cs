@@ -35,9 +35,15 @@ namespace GAMF_.Controllers
 
         public IActionResult CreditReport()
         {
-            var result = "";
-                          
-
+            var result = from student in _context.Students
+                         join enrollment in _context.Enrollments on student.Id equals enrollment.StudentId
+                         join course in _context.Courses on enrollment.CourseId equals course.CourseId
+                         group course.Credits by student.FirstMidName+" "+student.LastName into dataGroup
+                         select new CredirReportVM
+                         {
+                             Credits = dataGroup.Sum(),
+                             Student = dataGroup.Key
+                         };
 
             return View(result.ToList());
         }
