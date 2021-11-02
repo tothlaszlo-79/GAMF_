@@ -1,14 +1,31 @@
 ﻿@model IEnumerable<GAMF_.Models.Enrollment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Jelentkezések";
 }
 
-<h2>Index</h2>
+<h2>Jelenzkezések</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Új létrehozása</a>
 </p>
+
+<div class="col-md-4">
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Keresés</legend>
+        <form asp-action="Index">
+            <div class="form-group">
+                <input name="SearchString" class="form-control" placeholder="Név vagy tantárgy rászlet"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Keresés" class="btn btn-default"/>
+            </div>
+        </form>
+    </fieldset>
+</div>
+
+
+
 <table class="table">
     <thead>
         <tr>

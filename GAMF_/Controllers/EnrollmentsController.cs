@@ -20,7 +20,7 @@ namespace GAMF_.Controllers
         }
 
         // GET: Enrollments
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewBag.NameSortParam = string.IsNullOrEmpty(sortOrder)
                 ? "NameDesc" : string.Empty;
@@ -32,24 +32,62 @@ namespace GAMF_.Controllers
                 .Include(e => e.Student)
                 .AsQueryable();
 
-            switch (sortOrder)
+            //új .net színtaxis 
+            enrollments = sortOrder switch
             {
-                case "NameDesc":
-                    enrollments = enrollments.OrderByDescending(e => e.Student.LastName);
-                    break;
-                case "Course":
-                    enrollments = enrollments.OrderBy(e => e.Course.Title);
-                    break;
-                case "CourseDesc":
-                    enrollments = enrollments.OrderByDescending(e => e.Course.Title);
-                    break;
-                default:
-                    enrollments = enrollments.OrderBy(e => e.Student.LastName);
-                    break;
+                "Course"        => enrollments.OrderBy(e => e.Course.Title),
+                "CourseDesc"    => enrollments.OrderByDescending(e => e.Course.Title),
+                "NameDesc"      => enrollments.OrderByDescending(e => e.Student.LastName),
+                _               => enrollments.OrderBy(e => e.Student.LastName)
+            };
+
+
+            //switch (sortOrder)
+            //{
+            //    case "NameDesc":
+            //        enrollments = enrollments.OrderByDescending(e => e.Student.LastName);
+            //        break;
+            //    case "Course":
+            //        enrollments = enrollments.OrderBy(e => e.Course.Title);
+            //        break;
+            //    case "CourseDesc":
+            //        enrollments = enrollments.OrderByDescending(e => e.Course.Title);
+            //        break;
+            //    default:
+            //        enrollments = enrollments.OrderBy(e => e.Student.LastName);
+            //        break;
+            //}
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                enrollments = enrollments.Where(
+                    s => s.Student.LastName.ToUpper().Contains(searchString.ToUpper()) ||
+                    s.Course.Title.ToUpper().Contains(searchString.ToUpper())
+                    );
             }
+
 
             return View(await enrollments.ToListAsync());
         }
+
+        public IActionResult Index2() => View();
+
+        public JsonResult GetEnrollments()
+        {
+            var enrollemts = _context.Enrollments
+                .Include(e => e.Course)
+                .Include(e => e.Student)
+                .Select(e => new EnrollmentListVM
+                {
+                    CourseTitle = e.Course.Title,
+                    StudentFullName = $"{e.Student.LastName} {e.Student.FirstMidName}",
+                    Grade = e.Grade.ToString()
+
+                });
+
+            return Json(enrollemts.ToList());
+        }
+
 
         // GET: Enrollments/Details/5
         public async Task<IActionResult> Details(int? id)
